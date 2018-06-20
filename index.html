@@ -30,45 +30,58 @@
   <button v-on:click="reverseMessage">reverse text</button>
   <p>text: {{normalMessage}}</p>
   <input v-model="normalMessage" />
+  <ol>
+    <todo-item
+      v-for="item in groceryList"
+      v-bind:key="item.id"
+      v-bind:todo="item"
+    ></todo-item>
+  </ol>
 </div>
 
 <!--<script src="https://unpkg.com/vue"></script>-->
 <script src="./vue.js"></script>
 
 <script>
-const app = new Vue({
-  el: '#app',
-  data: {
-    products: [],
-    message: `页面加载于${(new Date()).toLocaleString()}`,
-    seen: true,
-    normalMessage: '大咖好，我系渣渣辉!',
-  },
-  created () {
-    // 生命周期-创建
-    fetch('https://api.myjson.com/bins/74l63')
-      .then(response => response.json())
-      .then(json => {
-        this.products = json.products;
-      });
-  },
-  computed: {
-    total() {
-      return this.products.reduce((r, e) => r + e.quantity, 0);
-    }
-  },
-  methods: {
-    reverseMessage() {
-      this.normalMessage = this.normalMessage.split('').reverse().join('');
-    }
-  },
-});
 
-// 声明组件
-Vue.component('todo-item', {
-  template: '<li>我是一个待办事项</li>',
-});
+  // 声明组件（得在调用之前）
+  Vue.component('todo-item', {
+    // 接收props
+    props: ['todo'],
+    template: `<li style="color: blue">{{todo.text}}</li>`,
+  });
 
-
+  const app = new Vue({
+    el: '#app',
+    data: {
+      products: [],
+      message: `页面加载于${(new Date()).toLocaleString()}`,
+      seen: true,
+      normalMessage: '大咖好，我系渣渣辉!',
+      groceryList: [
+        { id: 0, text: '蔬菜' },
+        { id: 1, text: '奶酪' },
+        { id: 2, text: '随便其它什么人吃的东西' }
+      ]
+    },
+    created () {
+      // 生命周期-创建
+      fetch('https://api.myjson.com/bins/74l63')
+        .then(response => response.json())
+        .then(json => {
+          this.products = json.products;
+        });
+    },
+    computed: {
+      total() {
+        return this.products.reduce((r, e) => r + e.quantity, 0);
+      }
+    },
+    methods: {
+      reverseMessage() {
+        this.normalMessage = this.normalMessage.split('').reverse().join('');
+      }
+    },
+  });
 
 </script>
