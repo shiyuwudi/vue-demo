@@ -1,4 +1,12 @@
-<script src="http://localhost:8098"></script>
+<!--<script src="http://localhost:8098"></script>-->
+<style>
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .5s;
+  }
+  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
+  }
+</style>
 <div id="app">
   <!-- <h2>{{ product }} are in stock</h2> -->
   <ul>
@@ -14,15 +22,27 @@
     </li>
   </ul>
   <h2>总库存: {{ total }}个</h2>
+  <h2 v-bind:title="message">悬停查看提示信息</h2>
+  <button v-on:click="seen = !seen">{{seen ? 'hide' : 'show'}}</button>
+  <transition name="fade">
+    <p v-if="seen">现在你看到我了</p>
+  </transition>
+  <button v-on:click="reverseMessage">reverse text</button>
+  <p>text: {{normalMessage}}</p>
+  <input v-model="normalMessage" />
 </div>
 
-<script src="https://unpkg.com/vue"></script>
+<!--<script src="https://unpkg.com/vue"></script>-->
+<script src="./vue.js"></script>
 
 <script>
 const app = new Vue({
   el: '#app',
   data: {
     products: [],
+    message: `页面加载于${(new Date()).toLocaleString()}`,
+    seen: true,
+    normalMessage: '大咖好，我系渣渣辉!',
   },
   created () {
     // 生命周期-创建
@@ -36,6 +56,19 @@ const app = new Vue({
     total() {
       return this.products.reduce((r, e) => r + e.quantity, 0);
     }
-  }
+  },
+  methods: {
+    reverseMessage() {
+      this.normalMessage = this.normalMessage.split('').reverse().join('');
+    }
+  },
 });
+
+// 声明组件
+Vue.component('todo-item', {
+  template: '<li>我是一个待办事项</li>',
+});
+
+
+
 </script>
