@@ -1,0 +1,41 @@
+<script src="http://localhost:8098"></script>
+<div id="app">
+  <!-- <h2>{{ product }} are in stock</h2> -->
+  <ul>
+    <li v-for="product in products">
+      <input type="number" v-model.number="product.quantity" />
+      {{ product.name }}
+      <span v-if="product.quantity === 0" style="color: red">
+        --没有库存了--
+      </span>
+      <button @click="product.quantity++">+</button>
+      {{  }}
+      <button @click="product.quantity--">-</button>
+    </li>
+  </ul>
+  <h2>总库存: {{ total }}个</h2>
+</div>
+
+<script src="https://unpkg.com/vue"></script>
+
+<script>
+const app = new Vue({
+  el: '#app',
+  data: {
+    products: [],
+  },
+  created () {
+    // 生命周期-创建
+    fetch('https://api.myjson.com/bins/74l63')
+      .then(response => response.json())
+      .then(json => {
+        this.products = json.products;
+      });
+  },
+  computed: {
+    total() {
+      return this.products.reduce((r, e) => r + e.quantity, 0);
+    }
+  }
+});
+</script>
