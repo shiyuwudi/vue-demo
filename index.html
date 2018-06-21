@@ -37,6 +37,16 @@
       v-bind:todo="item"
     ></todo-item>
   </ol>
+  <p>普通插值 {{rawHTML}}</p>
+  <p>html插值 <span v-html="rawHTML"></span></p>
+  <div v-bind:id="dynamicId">动态绑定HTML特性（property）</div>
+  <button v-bind:disabled="isButtonDisabled">动态绑定disabled</button>
+  <p v-bind:id="'list-' + id">动态绑定：表达式</p>
+  <input type="text" v-model="imgSrc">
+  <p>
+    <img v-bind:src="imgSrc" alt="image" width="100" height="100">
+  </p>
+  <a v-on:click="onAClick" href="javascript:void(0)">v-on click</a>
 </div>
 
 <!--<script src="https://unpkg.com/vue"></script>-->
@@ -62,7 +72,20 @@
         { id: 0, text: '蔬菜' },
         { id: 1, text: '奶酪' },
         { id: 2, text: '随便其它什么人吃的东西' }
-      ]
+      ],
+      rawHTML: `<span style="color: red">我应该是红色的</span>`,
+      dynamicId: 'shiyuwudi',
+      isButtonDisabled: true,
+      id: '1',
+      imgSrc: 'https://ss0.baidu.com/7Po3dSag_xI4khGko9WTAnF6hhy/image/h%3D300/sign=a9f37a64f11f4134ff37037e151d95c1/c995d143ad4bd1137c1d50b556afa40f4afb0560.jpg',
+    },
+    methods: {
+      reverseMessage() {
+        this.normalMessage = this.normalMessage.split('').reverse().join('');
+      },
+      onAClick() {
+        console.log('atag clicked')
+      },
     },
     beforeCreate() {
       console.log('==beforeCreate==');
@@ -91,11 +114,6 @@
     computed: {
       total() {
         return this.products.reduce((r, e) => r + e.quantity, 0);
-      }
-    },
-    methods: {
-      reverseMessage() {
-        this.normalMessage = this.normalMessage.split('').reverse().join('');
       }
     },
   });
