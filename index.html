@@ -51,7 +51,7 @@
     template: `<li style="color: blue">{{todo.text}}</li>`,
   });
 
-  const app = new Vue({
+  const vm = new Vue({
     el: '#app',
     data: {
       products: [],
@@ -64,6 +64,9 @@
         { id: 2, text: '随便其它什么人吃的东西' }
       ]
     },
+    beforeCreate() {
+      console.log('==beforeCreate==');
+    },
     created () {
       // 生命周期-创建
       fetch('https://api.myjson.com/bins/74l63')
@@ -71,6 +74,19 @@
         .then(json => {
           this.products = json.products;
         });
+      console.log('==created==');
+    },
+    beforeMount() {
+      console.log('==beforeMount==');
+    },
+    mounted() {
+      console.log('==mounted==');
+    },
+    beforeUpdate() {
+      console.log('==beforeUpdate==');
+    },
+    updated() {
+      console.log('==updated==');
     },
     computed: {
       total() {
