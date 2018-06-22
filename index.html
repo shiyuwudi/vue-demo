@@ -6,8 +6,57 @@
   .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
     opacity: 0;
   }
+  .active {
+    color: green;
+  }
+  .text-danger {
+    color: red;
+  }
 </style>
 <div id="app">
+
+  <template v-if="loginType === 'username'">
+    <label>用户名</label>
+    <input type="text" placeholder="请输入用户名" key="username">
+  </template>
+  <template v-else>
+    <label>邮箱</label>
+    <input type="text" placeholder="请输入邮箱" key="email">
+  </template>
+  <p>
+      <button @click="toggleLoginType">切换登录方式</button>
+  </p>
+  
+
+  <span v-if="random > 0.5">
+    中国队赢世界杯
+  </span>
+  <span v-else>
+    巴西队赢世界杯
+  </span>
+  <button @click="random = Math.random()">再试试手气</button>
+  
+  <template v-if="ok">
+    <h1>Title</h1>
+    <p>Paragraph 1</p>
+    <p>Paragraph 2</p>
+  </template>
+  <p v-if="ok">Yes</p>
+  <p v-else>No</p>
+  <p :class="classObject">绑定类对象</p>
+  <p>
+    类名绑定
+    <span v-for="(buttonName, i) in buttonNames" style="margin-right: 10px">
+      <a
+        :class="{ active: activeButtonName === buttonName }"
+        href="javascript:void(0)"
+        @click="onClickButtonName(buttonName)"
+      >
+        {{i + 1}}-{{buttonName}}
+      </a>
+    </span>
+  </p>
+
   <div id="example">
     <p>Original message: "{{ msg }}"</p>
     <p>from Computed: "{{ rMsg }}"</p>
@@ -39,6 +88,7 @@
       v-for="item in groceryList"
       v-bind:key="item.id"
       v-bind:todo="item"
+      class="baz boo"
     ></todo-item>
   </ol>
   <p>普通插值 {{rawHTML}}</p>
@@ -62,12 +112,19 @@
   Vue.component('todo-item', {
     // 接收props
     props: ['todo'],
-    template: `<li style="color: blue">{{todo.text}}</li>`,
+    template: `<li style="color: blue" class="foo bar">{{todo.text}}</li>`,
   });
 
   const vm = new Vue({
     el: '#app',
     data: {
+      loginType: 'username',
+      random: Math.random(),
+      ok: true,
+      isActive: true,
+      error: null,
+      activeButtonName: '按钮1',
+      buttonNames: ['按钮1', '按钮2', '按钮3'],
       msg: '我是大好人...',
       products: [],
       message: `页面加载于${(new Date()).toLocaleString()}`,
@@ -85,6 +142,12 @@
       imgSrc: 'https://ss0.baidu.com/7Po3dSag_xI4khGko9WTAnF6hhy/image/h%3D300/sign=a9f37a64f11f4134ff37037e151d95c1/c995d143ad4bd1137c1d50b556afa40f4afb0560.jpg',
     },
     computed: {
+      classObject() {
+        return {
+          active: this.isActive && !this.error,
+          'text-danger': this.error && this.error.type === 'fatal',
+        };
+      },
       total() {
         return this.products.reduce((r, e) => r + e.quantity, 0);
       },
@@ -94,6 +157,17 @@
       },
     },
     methods: {
+      toggleLoginType() {
+        if (this.loginType === 'username') {
+          this.loginType = 'email';
+        } else {
+          this.loginType = 'username';
+        }
+      },
+      onClickButtonName(buttonName) {
+        this.activeButtonName = buttonName;
+        // console.log('onClickButtonName', buttonName);
+      },
       getRMsg() {
         console.log('**methods**');
         return this.msg.split('').reverse().join('');
