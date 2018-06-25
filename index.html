@@ -15,6 +15,13 @@
 </style>
 <div id="app">
 
+
+  <div>
+    <span v-for="n in 10">{{n + ' '}}</span>
+  </div>
+  <li v-for="m in even(numbers)" style="color: red">{{ m }}</li>
+  <li v-for="n in evenNumbers" style="color: blue">{{ n }}</li>
+
   <ul>
     <li v-for="(value, key) of teamObject">
       {{key}}取得{{value}}分
@@ -124,6 +131,7 @@
   const vm = new Vue({
     el: '#app',
     data: {
+      numbers: [ 1, 2, 3, 4, 5 ],
       teamObject: {
         中国队: 10,
         巴西队: 0,
@@ -153,6 +161,9 @@
       imgSrc: 'https://ss0.baidu.com/7Po3dSag_xI4khGko9WTAnF6hhy/image/h%3D300/sign=a9f37a64f11f4134ff37037e151d95c1/c995d143ad4bd1137c1d50b556afa40f4afb0560.jpg',
     },
     computed: {
+      evenNumbers() {
+        return this.numbers.filter(obj => obj % 2 === 0);
+      },
       classObject() {
         return {
           active: this.isActive && !this.error,
@@ -168,6 +179,9 @@
       },
     },
     methods: {
+      even(arr) {
+        return arr.filter(obj => obj % 2 === 0);
+      },
       toggleLoginType() {
         if (this.loginType === 'username') {
           this.loginType = 'email';
