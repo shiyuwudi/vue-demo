@@ -70,14 +70,27 @@
     newTodoText: '',
     filters: [ALL_FILTER.ALL, ALL_FILTER.NOT_COMPLETED, ALL_FILTER.COMPLETED],
     currentFilter: ALL_FILTER.ALL,
+    counter: 0,
+    name: 'Vue.js',
   };
 </script>
 <div id="app">
+
+  <div id="example-2">
+    <!-- `greet` 是在下面定义的方法名 -->
+    <button v-on:click="greet">Greet</button>
+  </div>
+
+  <div id="example-1">
+    <button v-on:click="counter += 1">Add 1</button>
+    <p>The button above has been clicked {{ counter }} times.</p>
+  </div>
+  
   <div>
     <p>待办列表</p>
     <input v-model="newTodoText" placeholder="比如：记得买鸡蛋" />{{' '}}<button @click="addNewTodo">添加</button>
   </div>
-  <!--<p>if > for </p>-->
+  
   <div class="todo-filter">
     <template v-for="type in filters">
       <span v-if="type === currentFilter">
@@ -95,10 +108,6 @@
   </div>
   <ul v-if="todos.length">
     <li v-for="todo in getFilteredTodos">
-      <star
-        :
-      ></star>
-      {{' '}}
       <input type="checkbox" v-model="todo.isComplete" />
       {{' '}}
       <span :style="{'text-decoration': todo.isComplete ? 'line-through' : 'none' }">{{ todo.title }}</span>
@@ -267,6 +276,14 @@
       },
     },
     methods: {
+      greet: function (event) {
+        // `this` 在方法里指向当前 Vue 实例
+        alert('Hello ' + this.name + '!')
+        // `event` 是原生 DOM 事件
+        if (event) {
+          alert(event.target.tagName);
+        }
+      },
       setFilter(filter) {
         this.currentFilter = filter;
       },
