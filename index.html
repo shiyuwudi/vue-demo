@@ -12,10 +12,113 @@
   .text-danger {
     color: red;
   }
+  .divider {
+    height: 1px;
+    width: 100px;
+    background: black;
+    display: inline-block;
+  }
+  .todo-filter {
+    margin-top: 20px;
+  }
 </style>
+<script>
+  const ALL_FILTER = {
+    ALL: '全部',
+    NOT_COMPLETED: '待办',
+    COMPLETED: '完成',
+  };
+  const data = {
+    numbers: [ 1, 2, 3, 4, 5 ],
+    teamObject: {
+      中国队: 10,
+      巴西队: 0,
+      德国队: -10,
+    },
+    loginType: 'username',
+    random: Math.random(),
+    ok: true,
+    isActive: true,
+    error: null,
+    activeButtonName: '按钮1',
+    buttonNames: ['按钮1', '按钮2', '按钮3'],
+    msg: '我是大好人...',
+    products: [],
+    message: `页面加载于${(new Date()).toLocaleString()}`,
+    seen: true,
+    normalMessage: '大咖好，我系渣渣辉!',
+    groceryList: [
+      { id: 0, text: '蔬菜' },
+      { id: 1, text: '奶酪' },
+      { id: 2, text: '随便其它什么人吃的东西' }
+    ],
+    rawHTML: `<span style="color: red">我应该是红色的</span>`,
+    dynamicId: 'shiyuwudi',
+    isButtonDisabled: true,
+    id: '1',
+    imgSrc: 'https://ss0.baidu.com/7Po3dSag_xI4khGko9WTAnF6hhy/image/h%3D300/sign=a9f37a64f11f4134ff37037e151d95c1/c995d143ad4bd1137c1d50b556afa40f4afb0560.jpg',
+    items: [
+      { id: 0, title: '今天' },
+      { id: 1, title: '明天' },
+      { id: 2, title: '后天' },
+    ],
+    todos: [
+      { id: 0, title: '吃肉', isComplete: false },
+      { id: 1, title: '买游戏', isComplete: true },
+      { id: 2, title: '好好睡觉', isComplete: false },
+    ],
+    newTodoText: '',
+    filters: [ALL_FILTER.ALL, ALL_FILTER.NOT_COMPLETED, ALL_FILTER.COMPLETED],
+    currentFilter: ALL_FILTER.ALL,
+  };
+</script>
 <div id="app">
-
-
+  <div>
+    <p>待办列表</p>
+    <input v-model="newTodoText" placeholder="比如：记得买鸡蛋" />{{' '}}<button @click="addNewTodo">添加</button>
+  </div>
+  <!--<p>if > for </p>-->
+  <div class="todo-filter">
+    <template v-for="type in filters">
+      <span v-if="type === currentFilter">
+        {{ type }}
+      </span>
+      <a
+        v-else
+        href="javascript:void(0)"
+        :style="{'margin-right': '10px', color: currentFilter===type ? 'orange': ''}"
+        @click="setFilter(type)"
+      >
+        {{type}}
+      </a>
+    </template>
+  </div>
+  <ul v-if="todos.length">
+    <li v-for="todo in getFilteredTodos">
+      <star
+        :
+      ></star>
+      {{' '}}
+      <input type="checkbox" v-model="todo.isComplete" />
+      {{' '}}
+      <span :style="{'text-decoration': todo.isComplete ? 'line-through' : 'none' }">{{ todo.title }}</span>
+      {{' '}}
+      <a href="javascript:void(0)" @click="delTodo(todo)">删除</a>
+    </li>
+  </ul>
+  <p v-else>没了！</p>
+  <p>for > if</p>
+  <ul>
+    <li v-for="todo in todos" v-if="!todo.isComplete">
+      {{ todo.title }}
+    </li>
+  </ul>
+  <ul>
+    <template v-for="item in items">
+      <li>{{item.title}}</li>
+      <li class="divider"></li>
+    </template>
+  </ul>
   <div>
     <span v-for="n in 10">{{n + ' '}}</span>
   </div>
@@ -88,12 +191,12 @@
     </li>
   </ul>
   <h2>总库存: {{ total }}个</h2>
-  <h2 v-bind:title="message">悬停查看提示信息</h2>
-  <button v-on:click="seen = !seen">{{seen ? 'hide' : 'show'}}</button>
+  <h2 :title="message">悬停查看提示信息</h2>
+  <button @click="seen = !seen">{{seen ? 'hide' : 'show'}}</button>
   <transition name="fade">
     <p v-if="seen">现在你看到我了</p>
   </transition>
-  <button v-on:click="reverseMessage">reverse text</button>
+  <button @click="reverseMessage">reverse text</button>
   <p>text: {{normalMessage}}</p>
   <input v-model="normalMessage" />
   <ol>
@@ -106,9 +209,9 @@
   </ol>
   <p>普通插值 {{rawHTML}}</p>
   <p>html插值 <span v-html="rawHTML"></span></p>
-  <div v-bind:id="dynamicId">动态绑定HTML特性（property）</div>
-  <button v-bind:disabled="isButtonDisabled">动态绑定disabled</button>
-  <p v-bind:id="'list-' + id">动态绑定：表达式</p>
+  <div :id="dynamicId">动态绑定HTML特性（property）</div>
+  <button :disabled="isButtonDisabled">动态绑定disabled</button>
+  <p :id="'list-' + id">动态绑定：表达式</p>
   <input type="text" v-model="imgSrc">
   <p>
     <img :src="imgSrc" alt="image" width="100" height="100">
@@ -128,39 +231,24 @@
     template: `<li style="color: blue" class="foo bar">{{todo.text}}</li>`,
   });
 
+  let id = 0;
+
   const vm = new Vue({
     el: '#app',
-    data: {
-      numbers: [ 1, 2, 3, 4, 5 ],
-      teamObject: {
-        中国队: 10,
-        巴西队: 0,
-        德国队: -10,
-      },
-      loginType: 'username',
-      random: Math.random(),
-      ok: true,
-      isActive: true,
-      error: null,
-      activeButtonName: '按钮1',
-      buttonNames: ['按钮1', '按钮2', '按钮3'],
-      msg: '我是大好人...',
-      products: [],
-      message: `页面加载于${(new Date()).toLocaleString()}`,
-      seen: true,
-      normalMessage: '大咖好，我系渣渣辉!',
-      groceryList: [
-        { id: 0, text: '蔬菜' },
-        { id: 1, text: '奶酪' },
-        { id: 2, text: '随便其它什么人吃的东西' }
-      ],
-      rawHTML: `<span style="color: red">我应该是红色的</span>`,
-      dynamicId: 'shiyuwudi',
-      isButtonDisabled: true,
-      id: '1',
-      imgSrc: 'https://ss0.baidu.com/7Po3dSag_xI4khGko9WTAnF6hhy/image/h%3D300/sign=a9f37a64f11f4134ff37037e151d95c1/c995d143ad4bd1137c1d50b556afa40f4afb0560.jpg',
-    },
+    data: data,
     computed: {
+      getFilteredTodos() {
+        return this.todos.filter(obj => {
+          if (this.currentFilter === ALL_FILTER.ALL) {
+            return true;
+          } else if (this.currentFilter === ALL_FILTER.COMPLETED) {
+            return obj.isComplete;
+          } else if (this.currentFilter === ALL_FILTER.NOT_COMPLETED) {
+            return !obj.isComplete;
+          }
+          return false;
+        });
+      },
       evenNumbers() {
         return this.numbers.filter(obj => obj % 2 === 0);
       },
@@ -174,11 +262,27 @@
         return this.products.reduce((r, e) => r + e.quantity, 0);
       },
       rMsg() {
-        console.log('**computed**');
+        // console.log('**computed**');
         return this.msg.split('').reverse().join('');
       },
     },
     methods: {
+      setFilter(filter) {
+        this.currentFilter = filter;
+      },
+      addNewTodo() {
+        if (this.newTodoText) {
+          this.todos = this.todos.concat([{
+            id: ++id,
+            title: this.newTodoText,
+            isComplete: false,
+          }]);
+          this.newTodoText = '';
+        }
+      },
+      delTodo(todo) {
+        this.todos = this.todos.filter(obj => obj.id !== todo.id);
+      },
       even(arr) {
         return arr.filter(obj => obj % 2 === 0);
       },
@@ -194,7 +298,7 @@
         // console.log('onClickButtonName', buttonName);
       },
       getRMsg() {
-        console.log('**methods**');
+        // console.log('**methods**');
         return this.msg.split('').reverse().join('');
       },
       reverseMessage() {
@@ -204,9 +308,9 @@
         console.log('@ atag clicked @')
       },
     },
-    beforeCreate() {
-      console.log('==beforeCreate==');
-    },
+    // beforeCreate() {
+    //   console.log('==beforeCreate==');
+    // },
     created () {
       // 生命周期-创建
       fetch('https://api.myjson.com/bins/74l63')
@@ -214,20 +318,20 @@
         .then(json => {
           this.products = json.products;
         });
-      console.log('==created==');
+      // console.log('==created==');
     },
-    beforeMount() {
-      console.log('==beforeMount==');
-    },
-    mounted() {
-      console.log('==mounted==');
-    },
-    beforeUpdate() {
-      console.log('==beforeUpdate==');
-    },
-    updated() {
-      console.log('==updated==');
-    },
+    // beforeMount() {
+    //   console.log('==beforeMount==');
+    // },
+    // mounted() {
+    //   console.log('==mounted==');
+    // },
+    // beforeUpdate() {
+    //   console.log('==beforeUpdate==');
+    // },
+    // updated() {
+    //   console.log('==updated==');
+    // },
   });
 
 </script>
