@@ -76,6 +76,15 @@
 </script>
 <div id="app">
 
+  <!-- 只有在 `keyCode` 是 13 时调用 `vm.submit()` -->
+  <input @keyup.enter="enterSubmit">
+
+  <div>
+      <button @click="handleBtnClicked">
+        Submit
+      </button>
+  </div>
+
   <div id="example-2">
     <!-- `greet` 是在下面定义的方法名 -->
     <button v-on:click="greet">Greet</button>
@@ -276,6 +285,12 @@
       },
     },
     methods: {
+      enterSubmit() {
+        alert('enterSubmit');
+      },
+      handleBtnClicked: function(e) {
+        console.log(111, e);
+      },
       greet: function (event) {
         // `this` 在方法里指向当前 Vue 实例
         alert('Hello ' + this.name + '!')
