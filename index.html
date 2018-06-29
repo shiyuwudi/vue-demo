@@ -72,17 +72,88 @@
     currentFilter: ALL_FILTER.ALL,
     counter: 0,
     name: 'Vue.js',
+    mlm: '',
+    checked: true,
+    checkedNames: ['John'],
+    picked: '',
+    selected: '',
+    selected_m: [],
+    selected_1: '',
+    options: [
+      { text: 'One', value: 'A' },
+      { text: 'Two', value: 'B' },
+      { text: 'Three', value: 'C' }
+    ],
   };
 </script>
 <div id="app">
+
+  <select v-model="selected_1">
+    <option disabled value="">请选择</option>
+    <option v-for="option in options" :key="option.value" :value="option.value">
+      {{ option.text }}
+    </option>
+  </select>
+  <span>已选择：{{ selected_1 }} </span>
+
+  <div id="example-6">
+    <select v-model="selected_m" multiple style="width: 50px;">
+      <option>A</option>
+      <option>B</option>
+      <option>C</option>
+    </select>
+    <br>
+    <span>Selected: {{ selected_m }}</span>
+  </div>
+
+  <div id="example-5">
+    <select v-model="selected">
+      <option disabled value="">请选择</option>
+      <option>A</option>
+      <option>B</option>
+      <option>C</option>
+    </select>
+    <span>Selected: {{ selected }}</span>
+  </div>
+
+  <div id="example-4">
+    <input type="radio" id="one" value="One" v-model="picked">
+    <label for="one">One</label>
+    <br>
+    <input type="radio" id="two" value="Two" v-model="picked">
+    <label for="two">Two</label>
+    <br>
+    <span>Picked: {{ picked }}</span>
+  </div>
+
+  <div id='example-3'>
+    <input type="checkbox" id="jack" value="Jack" v-model="checkedNames">
+    <label for="jack">Jack</label>
+    <input type="checkbox" id="john" value="John" v-model="checkedNames">
+    <label for="john">John</label>
+    <input type="checkbox" id="mike" value="Mike" v-model="checkedNames">
+    <label for="mike">Mike</label>
+    <br>
+    <span>Checked names: {{ checkedNames }}</span>
+  </div>
+
+  <input type="checkbox" id="checkbox" v-model="checked">
+  <label for="checkbox">{{ checked }}</label>
+  <br />
+
+  <span>Multiline message is:</span>
+  <p style="white-space: pre-line;">{{ mlm }}</p>
+  <br>
+  <textarea v-model="mlm" placeholder="add multiple lines"></textarea>
+  <br>
 
   <!-- 只有在 `keyCode` 是 13 时调用 `vm.submit()` -->
   <input @keyup.enter="enterSubmit">
 
   <div>
-      <button @click="handleBtnClicked">
-        Submit
-      </button>
+    <button @click="handleBtnClicked">
+      Submit
+    </button>
   </div>
 
   <div id="example-2">
